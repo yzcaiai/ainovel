@@ -186,7 +186,7 @@ function resolveApiKey(provider: ProviderKey, userApiKey: unknown): string {
 }
 
 async function getUserProviderConfig(
-  supabase: any,
+  supabase: ReturnType<typeof createClient>,
   userId: string,
   provider: ProviderKey
 ): Promise<UserProviderConfig | null> {
@@ -253,7 +253,7 @@ function extractUpstreamErrorMessage(rawText: string): string {
   return rawText.slice(0, 300);
 }
 
-function buildUserPrompt(settings: any, context?: any): string {
+function buildUserPrompt(settings: Record<string, unknown>, context?: Record<string, unknown>): string {
   const parts: string[] = [];
 
   if (settings.genres?.length) parts.push(`类型：${settings.genres.join("、")}`);
@@ -292,12 +292,12 @@ function truncateContext(text: string, maxChars: number = 24000): string {
   return text.slice(text.length - maxChars);
 }
 
-function buildPreviousSummary(chapters: any[]): string {
+function buildPreviousSummary(chapters: Record<string, unknown>[]): string {
   if (!chapters?.length) return "";
   // Take last 3 chapters, summarize by taking first 500 chars each
   const recent = chapters.slice(-3);
   return recent
-    .map((ch: any) => {
+    .map((ch: Record<string, unknown>) => {
       const content = ch.content || "";
       const summary = content.length > 500 ? content.slice(0, 500) + "..." : content;
       return `第${ch.chapter_number}章 ${ch.title}：${summary}`;
@@ -724,7 +724,7 @@ serve(async (req) => {
     let userPrompt = "";
 
     // Build context for continue mode
-    let context: any = {};
+    const context: Record<string, unknown> = {};
     if (mode === "continue" && novelId) {
       const [novelRes, chaptersRes, charsRes] = await Promise.all([
         supabase.from("novels").select("outline").eq("id", novelId).single(),

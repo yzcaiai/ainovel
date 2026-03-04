@@ -2,7 +2,7 @@
 
 export interface StreamNovelParams {
   mode: "generate" | "outline" | "characters" | "rewrite" | "continue";
-  settings: Record<string, any>;
+  settings: Record<string, unknown>;
   model: string;
   apiKey: string;
   apiBaseUrl?: string;

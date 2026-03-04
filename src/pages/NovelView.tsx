@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +24,7 @@ interface Novel {
   genre: string[];
   outline: string | null;
   word_count: number;
-  settings_json: any;
+  settings_json: Record<string, unknown>;
 }
 
 export default function NovelView() {
@@ -44,7 +45,7 @@ export default function NovelView() {
   const requestAbortControllerRef = useRef<AbortController | null>(null);
   const stopRequestedRef = useRef(false);
 
-  const loadProviders = async () => {
+  const loadProviders = useCallback(async () => {
     if (!user) return;
     const [{ data: profile }, { data: providerData }] = await Promise.all([
       supabase.from("profiles").select("default_llm_model").eq("user_id", user.id).single(),
@@ -60,7 +61,7 @@ export default function NovelView() {
       }
       setDefaultModel(model || "deepseek");
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (!id || !user) return;
@@ -92,7 +93,7 @@ export default function NovelView() {
       window.removeEventListener("model-settings-changed", onSettingsChanged);
       document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [id, user]);
+  }, [id, user, loadProviders, toast]);
 
   useEffect(() => {
     if (streamRef.current) streamRef.current.scrollTop = streamRef.current.scrollHeight;
