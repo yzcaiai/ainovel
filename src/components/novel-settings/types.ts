@@ -100,7 +100,7 @@ export interface CharacterBase {
   arcCustom: string;
 }
 
-export interface SideCharacter extends CharacterBase {}
+export type SideCharacter = CharacterBase;
 
 export interface Antagonist extends CharacterBase {
   motive: string;

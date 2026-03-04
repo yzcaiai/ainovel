@@ -44,7 +44,7 @@ export default function Auth() {
           description: "请查看邮箱完成验证后登录。",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "错误",
         description: error.message,
@@ -127,7 +127,7 @@ export default function Auth() {
                   },
                 });
                 if (error) throw error;
-              } catch (error: any) {
+              } catch (error: unknown) {
                 toast({
                   title: "Google 登录失败",
                   description: error.message,

@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,7 +28,7 @@ export default function Generate() {
   const requestAbortControllerRef = useRef<AbortController | null>(null);
   const [latestSettings, setLatestSettings] = useState<NovelSettings | null>(null);
 
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     if (!user) return;
     const [{ data: profile }, { data: providerData }] = await Promise.all([
       supabase.from("profiles").select("default_llm_model, nsfw_enabled").eq("user_id", user.id).single(),
@@ -45,7 +46,7 @@ export default function Generate() {
       }
       setDefaultModel(model || "deepseek");
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -63,7 +64,7 @@ export default function Generate() {
       window.removeEventListener("model-settings-changed", onSettingsChanged);
       document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [user]);
+  }, [user, loadSettings]);
 
   // Auto-scroll preview
   useEffect(() => {
@@ -199,7 +200,7 @@ export default function Generate() {
             if (chapterErr) throw chapterErr;
 
             toast({ title: "创作完成", description: "小说已自动保存到书库" });
-          } catch (e: any) {
+          } catch (e: unknown) {
             toast({ title: "保存失败", description: e.message, variant: "destructive" });
           }
         } else if (mode === "outline" && user) {

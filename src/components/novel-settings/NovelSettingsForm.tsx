@@ -154,9 +154,9 @@ export function NovelSettingsForm({
   const handleToggleGenre = (g: string) => {
     setSettings((prev) => ({
       ...prev,
-      genres: prev.genres.includes(g as any)
+      genres: prev.genres.includes(g as string)
         ? prev.genres.filter((x) => x !== g)
-        : [...prev.genres, g as any],
+        : [...prev.genres, g as string],
     }));
   };
 
@@ -187,7 +187,7 @@ export function NovelSettingsForm({
     }));
   };
 
-  const handleChangeWritingStyle = (field: keyof NovelSettings["writingStyle"], value: any) => {
+  const handleChangeWritingStyle = (field: keyof NovelSettings["writingStyle"], value: unknown) => {
     setSettings((prev) => ({
       ...prev,
       writingStyle: {
@@ -275,10 +275,10 @@ export function NovelSettingsForm({
         writingStyle: { ...prev.writingStyle, ...(parsed.writingStyle || {}) },
       }));
       toast({ title: "导入成功" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "导入失败",
-        description: err?.message || "JSON 解析失败",
+        description: err instanceof Error ? err.message : "JSON 解析失败",
         variant: "destructive",
       });
     } finally {
@@ -922,7 +922,7 @@ export function NovelSettingsForm({
                               setSettings((prev) => ({
                                 ...prev,
                                 sideCharacters: prev.sideCharacters.map((s) =>
-                                  s.id === c.id ? { ...s, gender: v as any } : s,
+                                  s.id === c.id ? { ...s, gender: v as string } : s,
                                 ),
                               }))
                             }
@@ -964,7 +964,7 @@ export function NovelSettingsForm({
                                 s.id === c.id
                                   ? {
                                       ...s,
-                                      relationship: v === "其他" ? "" : (v as any),
+                                      relationship: v === "其他" ? "" : (v as string),
                                     }
                                   : s,
                               ),
@@ -1012,7 +1012,7 @@ export function NovelSettingsForm({
                                 s.id === c.id
                                   ? {
                                       ...s,
-                                      arc: v === "其他" ? "" : (v as any),
+                                      arc: v === "其他" ? "" : (v as string),
                                     }
                                   : s,
                               ),
@@ -1234,7 +1234,7 @@ export function NovelSettingsForm({
                               setSettings((prev) => ({
                                 ...prev,
                                 antagonists: prev.antagonists.map((s) =>
-                                  s.id === c.id ? { ...s, gender: v as any } : s,
+                                  s.id === c.id ? { ...s, gender: v as string } : s,
                                 ),
                               }))
                             }

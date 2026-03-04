@@ -47,7 +47,7 @@ export default function LibraryPage() {
       setLoading(false);
     };
     fetchNovels();
-  }, [user]);
+  }, [user, toast]);
 
   const filtered = novels.filter((n) => {
     const matchSearch = n.title.toLowerCase().includes(search.toLowerCase());
